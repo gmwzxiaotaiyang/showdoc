@@ -1,15 +1,25 @@
 
-[TOC]
+# 目录
 
-# 创建项目
+1. [搭建项目](#搭建项目)
+   - [搭建Vite项目](#搭建vite项目)
+   - [添加别名](#添加别名)
+2. [安装框架](#安装框架)
+   - [代码规范](#代码规范)
+   - [必备框架](#必备框架)
+3. [Vite插件](#vite插件)
 
-## 搭建vite 项目
+## 搭建项目
 
-参考网址 https://cn.vitejs.dev/guide/
+### 搭建Vite项目
 
-## 添加又名
-在vite.config.js 中的defineConfig 中添加
-```
+参考官方指南: [Vite 官方文档](https://cn.vitejs.dev/guide/)
+
+### 添加别名
+
+在`vite.config.js`的`defineConfig`中添加:
+
+```javascript
 import path from 'node:path';
 
     resolve: { alias: {
@@ -18,7 +28,7 @@ import path from 'node:path';
     } },
 ```
 
-新建 jsconfig.json   或者 tsconfig.json
+创建`jsconfig.json`或`tsconfig.json` :
 ```
 @'
 {
@@ -33,13 +43,14 @@ import path from 'node:path';
 '@ | Out-File -Encoding UTF8 jsconfig.json
 ```
 
+
 ## 安装框架
 
 ### 代码规范
 
 #### IDE 配置
 
-配置文件为 .editorconfig ，通常情况下无需做任何修改。
+创建`.editorconfig`文件:
 
 ```
 @'
@@ -62,6 +73,8 @@ echo "18.20.3" > .node-version
 
 #### eslint
 
+安装依赖:
+
 ```
 npm i eslint -D
 npm i @antfu/eslint-config -D
@@ -70,7 +83,8 @@ npm i unocss -D
 
 ```
 
-修改工作区配置
+配置VSCode:
+
 ```
 @'
 {
@@ -100,7 +114,7 @@ npm i unocss -D
 '@ | Out-File -Encoding UTF8 .\.vscode\settings.json
 ```
 
-替换 eslint.config.js
+替换 `eslint.config.js`
 ```
 import antfu from '@antfu/eslint-config'
 
@@ -133,7 +147,7 @@ export default antfu(
 
 ```
 
-创建 uno.config.js
+创建`uno.config.js`和主题文件 (省略具体内容)
 ```
 @'
 import {
@@ -309,6 +323,8 @@ export const darkTheme = {
 
 #### Stylelint
 
+安装依赖:
+
 ```
 npm init stylelint  |  pnpm create stylelint
 
@@ -321,7 +337,7 @@ npm init stylelint  |  pnpm create stylelint
 npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-config-standard-vue stylelint-config-recess-order @stylistic/stylelint-config stylelint-scss
 ```
 
-修改 .stylelintrc.json 文件
+修改`.stylelintrc.json`文件
 ```
 {
   "extends": [
@@ -394,6 +410,79 @@ app.mount('#app')
 npm install -D unplugin-vue-components unplugin-auto-import
 ```
 
+#### router
+
+```
+npm install vue-router@4
+```
+
+创建文件 src\router\index.js
+```
+ New-Item -Path ".\src\router\index.js" -ItemType File -Force
+```
+
+```
+import { createMemoryHistory, createRouter } from 'vue-router'
+import Test from '@/pages/test'
+
+const routes = [
+  { path: '/test', component: Test },
+]
+
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes,
+})
+
+export default router
+
+```
+
+修改 main.js
+```
+import router from './router'
+app.use(router)
+```
+
+修改 app.js
+```
+  <main>
+    <RouterView />
+  </main>
+```
+
+#### bootstrap
+
+```
+npm i --save bootstrap @popperjs/core
+```
+
+修改 vite.config.js
+
+``` alias: {
+      '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
+    }
+```
+
+创建文件 src\assets\styles\styles.scss
+```
+ New-Item -Path ".\src\assets\styles\styles.scss" -ItemType File -Force
+```
+```
+// Import all of Bootstrap's CSS
+@import "~bootstrap/scss/bootstrap";
+```
+
+修改 main.js
+
+```
+// Import our custom CSS
+import '../scss/styles.scss'
+
+// Import all of Bootstrap's JS
+import * as bootstrap from 'bootstrap'
+```
+
 #### sass
 ```
 npm install --save-dev sass
@@ -443,6 +532,7 @@ export default async ({ mode, command }) => {
   })
 }
 ```
+#### auto import
 
 #### 开发服务器启动时,在终端中输出信息
 
@@ -508,13 +598,18 @@ npm install vite-plugin-fake-server --save-dev
 
 新建 mock.js 文件
 ```
-import vue from '@vitejs/plugin-vue'
+import { vitePluginFakeServer } from 'vite-plugin-fake-server'
 
-export default function createVitePlugins(viteEnv, isBuild = false) {
-  const vitePlugins = [vue()]
-  vitePlugins.push(createBanner())
-  return vitePlugins
+export default function createMock(env, isBuild) {
+  const { VITE_BUILD_MOCK } = env
+  return vitePluginFakeServer({
+    logger: !isBuild,
+    include: 'src/mock',
+    infixName: false,
+    enableProd: isBuild && VITE_BUILD_MOCK === 'true',
+  })
 }
+
 
 ```
 
