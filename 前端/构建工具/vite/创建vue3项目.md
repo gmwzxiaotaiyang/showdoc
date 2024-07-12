@@ -20,7 +20,7 @@
 
 ### 使用Vite创建vue项目
 
-参考官方指南: [Vite 官方文档](https://cn.vitejs.dev/guide/)
+参考官方指南: [Vite 官方文档](https://cn.vitejs.dev/guide/#scaffolding-your-first-vite-project)
 
 ```
 npm create vite@latest my-vue-app -- --template vue 
@@ -63,6 +63,7 @@ import path from 'node:path';
 
 #### 创建 `.editorconfig`
 
+参考 [官方配置](https://github.com/editorconfig/editorconfig/blob/master/.editorconfig)
 
 >  .editorconfig 是一种文件格式和一组文本编辑器插件，用于在不同的编辑器和集成开发环境（IDE）之间保持一致的编码风格。它用在不同开发人员之间维护一致的编码风格。
 
@@ -80,12 +81,16 @@ trim_trailing_whitespace = true
 '@ | Out-File -Encoding UTF8 .editorconfig
 ```
 
-#### 创建`.node-version`
+#### 创建`.nvmrc`
 
-> .node-version 文件通常用于指定项目所使用的 Node.js 版本。这对于确保团队中的每个开发人员以及部署环境使用相同的 Node.js 版本非常有用。
+> nvm 配置文件
+
+参考 [nvm github](https://github.com/nvm-sh/nvm?tab=readme-ov-file#nvmrc)
+
+> .nvmrc 是一个用于指定 Node.js 版本的文件，通常放置在项目的根目录中。这个文件的主要目的是帮助开发者在不同的项目之间切换 Node.js 版本时更加方便和一致。.nvmrc 文件的内容非常简单，通常只包含一个版本号，例如：
 
 ```
-echo "18.20.3" > .node-version
+echo "18.20.3" > .nvmrc
 ```
 
 #### eslint @antfu/eslint-config
