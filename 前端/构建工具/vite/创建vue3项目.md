@@ -1,20 +1,24 @@
 
 ## 顺序
-- [搭建vite项目](#搭建vite项目)
-- [ide 配置](#ide-配置)
-- [node 版本](#node-版本)
-- [配置 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
-- [安装 Stylelint
-](#stylelint)
-- [npm-run-all](#npm-run-all)
-- [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
-- [安装 elementui](#elementui)
-- [auto-import](#auto-import)
-- [components](#components)
+
+- 基础
+  - [使用Vite创建vue项目](#使用Vite创建vue项目)
+  - [创建 .editorconfig](#创建-editorconfig)
+  - [创建 .node-version](#创建node-version)
+  - [安装 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
+  - [安装 Stylelint
+  ](#stylelint)
+  - [安装 npm-run-all](#npm-run-all)
+  - [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
+  - [安装 elementui](#elementui)
+  - [安装 auto-import](#auto-import)
+  - [安装 components](#components)
+- 可选
+  - 阿斯蒂芬
 
 ## 搭建项目
 
-### 搭建Vite项目
+### 使用Vite创建vue项目
 
 参考官方指南: [Vite 官方文档](https://cn.vitejs.dev/guide/)
 
@@ -23,8 +27,6 @@ npm create vite@latest my-vue-app -- --template vue
 npm i
 
 ```
-
-
 
 ### 添加别名
 
@@ -59,9 +61,10 @@ import path from 'node:path';
 
 ### 代码规范
 
-#### IDE 配置
+#### 创建 `.editorconfig`
 
-创建`.editorconfig`文件:
+
+>  .editorconfig 是一种文件格式和一组文本编辑器插件，用于在不同的编辑器和集成开发环境（IDE）之间保持一致的编码风格。它用在不同开发人员之间维护一致的编码风格。
 
 ```
 @'
@@ -77,7 +80,10 @@ trim_trailing_whitespace = true
 '@ | Out-File -Encoding UTF8 .editorconfig
 ```
 
-#### node 版本
+#### 创建`.node-version`
+
+> .node-version 文件通常用于指定项目所使用的 Node.js 版本。这对于确保团队中的每个开发人员以及部署环境使用相同的 Node.js 版本非常有用。
+
 ```
 echo "18.20.3" > .node-version
 ```
@@ -247,7 +253,7 @@ npm i lint-staged -D
 
 ### 必备框架
 
-### axios
+#### axios
 
 安装
 ```
@@ -260,7 +266,7 @@ npm i axios
 
 ```
 
-### pinia
+#### pinia
 
 安装
 
