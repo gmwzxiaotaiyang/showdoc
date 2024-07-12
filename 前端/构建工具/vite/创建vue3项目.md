@@ -14,7 +14,7 @@
   - [安装 auto-import](#auto-import)
   - [安装 components](#components)
 - 可选
-  - 阿斯蒂芬
+  - [axios](#axios)
 
 ## 搭建项目
 
@@ -255,16 +255,55 @@ npm i lint-staged -D
 
 #### axios
 
+参考 [axios 官网](https://axios-http.com/docs/intro)
+
 安装
 ```
 npm i axios
 ```
 
-新建文件夹 api
-新建文件index.js
+新建文件夹 src\api\index.js
+```
+ New-Item -Path ".\src\api\index.js" -ItemType File -Force
 ```
 
+
 ```
+@'
+import axios from 'axios'
+
+const instance = axios.create({
+  baseURL: 'https://some-domain.com/api/',
+  timeout: 1000 * 10,
+})
+
+// 添加请求拦截器
+axios.interceptors.request.use((config) => {
+  // 在发送请求之前做些什么
+  return config
+}, (error) => {
+  // 对请求错误做些什么
+  return Promise.reject(error)
+})
+
+// 添加响应拦截器
+axios.interceptors.response.use((response) => {
+  // 2xx 范围内的状态码都会触发该函数。
+  // 对响应数据做点什么
+  return response
+}, (error) => {
+  // 超出 2xx 范围的状态码都会触发该函数。
+  // 对响应错误做点什么
+  return Promise.reject(error)
+})
+
+export default instance
+
+'@ | Out-File -Encoding UTF8 .\src\api\index.js
+```
+
+[配置 mock](#vite-plugin-fake-server-模拟后端服务器的响应)
+
 
 #### pinia
 
@@ -649,7 +688,7 @@ export default function createAutoImport() {
 
 ```
 import vue from '@vitejs/plugin-vue'
-import createAutoImport from './auto-import'
++import createAutoImport from './auto-import'
 import createComponents from './components'
 
 export default function createVitePlugins(viteEnv, isBuild = false) {
@@ -691,7 +730,7 @@ export default function createComponents() {
 ```
 import vue from '@vitejs/plugin-vue'
 import createAutoImport from './auto-import'
-import createComponents from './components'
++import createComponents from './components'
 
 export default function createVitePlugins(viteEnv, isBuild = false) {
   const vitePlugins = [vue()]
@@ -761,12 +800,17 @@ npm install vite-plugin-banner --save-dev   || yarn add vite-plugin-banner --dev
 
 #### vite-plugin-fake-server 模拟后端服务器的响应
 
+参考 [vite-plugin-fake-server github](https://github.com/condorheroblog/vite-plugin-fake-server)
+
+##### 安装依赖
+
 ```
 npm install vite-plugin-fake-server --save-dev
 ```
 
-新建 mock.js 文件
+##### 新建 `.\vite\plugins\mock.js` 文件
 ```
+@'
 import { vitePluginFakeServer } from 'vite-plugin-fake-server'
 
 export default function createMock(env, isBuild) {
@@ -774,26 +818,76 @@ export default function createMock(env, isBuild) {
   return vitePluginFakeServer({
     logger: !isBuild,
     include: 'src/mock',
-    infixName: false,
     enableProd: isBuild && VITE_BUILD_MOCK === 'true',
   })
 }
+'@ | Out-File -Encoding UTF8 .\vite\plugins\mock.js
+```
 
+##### 添加至 `vite\plugins\index.js`
+
+```
+import vue from '@vitejs/plugin-vue'
+import createAutoImport from './auto-import'
+import createComponents from './components'
++import createMock from './mock'
+
+export default function createVitePlugins(viteEnv, isBuild = false) {
+  const vitePlugins = [vue()]
+  vitePlugins.push(createAutoImport())
+  vitePlugins.push(createComponents())
++  vitePlugins.push(createMock(viteEnv, isBuild))
+
+  return vitePlugins
+}
 
 ```
 
-安装mock.js
+##### 安装`mock.js @faker-js/faker`
+
 ```
-npm i mockjs
+npm i mockjs @faker-js/faker
 ```
 
-新建mock 文件夹
-创建user.js 
+##### 新建 mock 文件（如 user）
+
+```
+ New-Item -Path ".\src\mock\user.fake.js" -ItemType File -Force
+```
+
 ```
 import { defineFakeRoute } from 'vite-plugin-fake-server/client'
 import Mock from 'mockjs'
+import { faker } from '@faker-js/faker'
 
 export default defineFakeRoute([
+  {
+    url: '/mock/get-user-info',
+    response: () => {
+      return Mock.mock({
+        id: '@guid',
+        username: '@first',
+        email: '@email',
+        avatar: '@image("200x200")',
+        role: 'admin',
+      })
+    },
+  },
+  {
+    url: '/fake/get-user-info',
+    response: () => {
+      return {
+        id: faker.string.uuid(),
+        avatar: faker.image.avatar(),
+        birthday: faker.date.birthdate(),
+        email: faker.internet.email(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        sex: faker.person.sexType(),
+        role: 'admin',
+      }
+    },
+  },
   {
     url: '/mock/user/login',
     method: 'post',
@@ -850,5 +944,6 @@ export default defineFakeRoute([
     },
   },
 ])
+
 
 ```
