@@ -4,7 +4,7 @@
 - 基础
   - [使用Vite创建vue项目](#使用Vite创建vue项目)
   - [创建 .editorconfig](#创建-editorconfig)
-  - [创建 .node-version](#创建node-version)
+  - [创建 创建 .nvmrc](#创建nvmrc)
   - [安装 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
   - [安装 Stylelint
   ](#stylelint)
