@@ -1,19 +1,30 @@
 
-# 目录
-
-1. [搭建项目](#搭建项目)
-   - [搭建Vite项目](#搭建vite项目)
-   - [添加别名](#添加别名)
-2. [安装框架](#安装框架)
-   - [代码规范](#代码规范)
-   - [必备框架](#必备框架)
-3. [Vite插件](#vite插件)
+## 顺序
+- [搭建vite项目](#搭建vite项目)
+- [ide 配置](#ide-配置)
+- [node 版本](#node-版本)
+- [配置 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
+- [安装 Stylelint
+](#stylelint)
+- [npm-run-all](#npm-run-all)
+- [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
+- [安装 elementui](#elementui)
+- [auto-import](#auto-import)
+- [components](#components)
 
 ## 搭建项目
 
 ### 搭建Vite项目
 
 参考官方指南: [Vite 官方文档](https://cn.vitejs.dev/guide/)
+
+```
+npm create vite@latest my-vue-app -- --template vue 
+npm i
+
+```
+
+
 
 ### 添加别名
 
@@ -71,33 +82,73 @@ trim_trailing_whitespace = true
 echo "18.20.3" > .node-version
 ```
 
-#### eslint
+#### eslint @antfu/eslint-config
 
-安装依赖:
+[参考网址](https://www.npmjs.com/package/@antfu/eslint-config/v/2.21.2)
 
-```
-npm i eslint -D
-npm i @antfu/eslint-config -D
-npx eslint --init  |  npm init @eslint/config@latest |pnpm create @eslint/config@latest
-npm i unocss -D
+##### 安装依赖:
 
 ```
+npm i -D eslint @antfu/eslint-config@^2.21.2
+```
 
-配置VSCode:
-
+##### 创建 `eslint.config.js`
 ```
 @'
+import antfu from '@antfu/eslint-config'
+
+export default antfu()
+'@ | Out-File -Encoding UTF8 .\eslint.config.js
+```
+
+##### 添加 package.json 脚本
+
+```
 {
+  "scripts": {
+    "lint": "eslint .",
+    "lint:eslint": "eslint . --cache --fix",
+    "lint:fix": "eslint . --fix"
+  }
+}
+```
+
+##### VS Code 支持（保存时自动修复）
+
+安装 [VS Code ESLint](https://cn.vitejs.dev/guide/) 插件
+
+将以下设置添加到您的`.vscode/settings.json`：
+
+
+##### 配置VSCode:
+
+```
+{
+  // 禁用默认的格式化程序，使用 eslint 代替
+  "prettier.enable": true,
   "editor.formatOnSave": false,
+
+  // 自动修复
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
+    "source.organizeImports": "never"
   },
-  "stylelint.validate": [
-    "css",
-    "scss",
-    "vue"
+
+  // 在 IDE 中静默样式规则，但仍然自动修复它们
+  "eslint.rules.customizations": [
+    { "rule": "style/*", "severity": "off" },
+    { "rule": "format/*", "severity": "off" },
+    { "rule": "*-indent", "severity": "off" },
+    { "rule": "*-spacing", "severity": "off" },
+    { "rule": "*-spaces", "severity": "off" },
+    { "rule": "*-order", "severity": "off" },
+    { "rule": "*-dangle", "severity": "off" },
+    { "rule": "*-newline", "severity": "off" },
+    { "rule": "*quotes", "severity": "off" },
+    { "rule": "*semi", "severity": "off" }
   ],
+
+  // 为所有支持的语言启用 eslint
   "eslint.validate": [
     "javascript",
     "javascriptreact",
@@ -108,46 +159,236 @@ npm i unocss -D
     "markdown",
     "json",
     "jsonc",
-    "yaml"
+    "yaml",
+    "toml",
+    "xml",
+    "gql",
+    "graphql",
+    "astro",
+    "css",
+    "less",
+    "scss",
+    "pcss",
+    "postcss"
   ]
 }
-'@ | Out-File -Encoding UTF8 .\.vscode\settings.json
+
 ```
 
-替换 `eslint.config.js`
 ```
-import antfu from '@antfu/eslint-config'
+npm run eslin:fix
 
-export default antfu(
-  {
-    unocss: true,
-    ignores: ['public', 'dist*'],
-  },
-  {
-    rules: {
-      'eslint-comments/no-unlimited-disable': 'off',
-      'curly': ['error', 'all'],
-      'antfu/consistent-list-newline': 'off',
-      // 'no-console': ['error', { allow: ['warn', 'error'] }], // 添加 no-console 规则
-      'no-console': 'off', // 允许使用 console
-    },
-  },
-  {
-    files: ['src/**/*.vue'],
-    rules: {
-      'vue/block-order': [
-        'error',
-        {
-          order: ['route', 'script', 'template', 'style'],
-        },
+```
+
+#### Stylelint
+
+安装依赖:
+
+```
+1.
+# npm init stylelint  |  pnpm create stylelint
+2. （推荐）
+# @stylistic/stylelint-config
+# stylelint-config-recess-order css排序
+# stylelint-config-standard 提供了一套全面的、标准化的 CSS 代码风格规则
+# stylelint-config-standard-scss 专门针对 SCSS（Sassy CSS）语法
+# stylelint-config-standard-vue 添加了特定于 Vue 单文件组件 (SFC) 的规则
+# stylelint-scss  # 插件  强制执行 SCSS（Sassy CSS）语法
+npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-config-standard-vue stylelint-config-recess-order @stylistic/stylelint-config stylelint-scss
+```
+
+修改`.stylelintrc.json`文件
+```
+{
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-standard-vue/scss",
+    "stylelint-config-recess-order",
+    "@stylistic/stylelint-config"
+  ],
+  "plugins": [
+    "stylelint-scss"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.vue",
+        "**/*.vue"
       ],
-    },
-  },
-)
+      "customSyntax": "postcss-html"
+    }
+  ]
+}
 
 ```
 
-创建`uno.config.js`和主题文件 (省略具体内容)
+
+在 package.json 的 script 中添加 
+```
+    "lint:stylelint": "stylelint \"src/**/*.{css,scss,vue}\" --cache --fix",
+```
+
+#### npm-run-all
+```
+npm i npm-run-all2 -D
+```
+在 package.json 的 script 中添加 
+```
+    "lint": "npm-run-all -s lint:eslint lint:stylelint",
+```
+
+#### simple-git-hooks 和 lint-staged
+
+```
+npm i simple-git-hooks -D
+npm i lint-staged -D     
+
+```
+
+### 必备框架
+
+### axios
+
+安装
+```
+npm i axios
+```
+
+新建文件夹 api
+新建文件index.js
+```
+
+```
+
+### pinia
+
+安装
+
+参考官网 
+
+```
+npm install pinia
+```
+
+#### elementui
+
+[参考](https://element-plus.org/zh-CN/guide/quickstart.html)
+
+安装依赖
+
+```
+npm install element-plus --save
+
+```
+参考如下代码修改 man.js
+```
+import { createApp } from 'vue'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import App from './App.vue'
+
+const app = createApp(App)
+
+app.use(ElementPlus)
+app.mount('#app')
+```
+
+##### 安装插件
+
+[auto-import](#auto-import)
+[components](#components)
+
+
+
+#### router
+
+```
+npm install vue-router@4
+```
+
+创建文件 src\router\index.js
+```
+ New-Item -Path ".\src\router\index.js" -ItemType File -Force
+```
+
+```
+import { createMemoryHistory, createRouter } from 'vue-router'
+import Test from '@/pages/test'
+
+const routes = [
+  { path: '/test', component: Test },
+]
+
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes,
+})
+
+export default router
+
+```
+
+修改 main.js
+```
+import router from './router'
+app.use(router)
+```
+
+修改 app.js
+```
+  <main>
+    <RouterView />
+  </main>
+```
+
+#### bootstrap
+
+```
+npm i --save bootstrap @popperjs/core
+```
+
+修改 vite.config.js
+
+``` alias: {
+      '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
+    }
+```
+
+创建文件 src\assets\styles\styles.scss
+```
+ New-Item -Path ".\src\assets\styles\styles.scss" -ItemType File -Force
+```
+```
+// Import all of Bootstrap's CSS
+@import "~bootstrap/scss/bootstrap";
+```
+
+修改 main.js
+
+```
+// Import our custom CSS
+import '../scss/styles.scss'
+
+// Import all of Bootstrap's JS
+import * as bootstrap from 'bootstrap'
+```
+
+#### sass
+```
+npm install --save-dev sass
+
+```
+
+#### unocss
+
+安装依赖
+
+```
+npm i unocss -D
+```
+
+创建`uno.config.js`和主题文件 
+
 ```
 @'
 import {
@@ -316,183 +557,16 @@ export const darkTheme = {
 '@ | Out-File -Encoding UTF8 .\themes\index.js
 ```
 
-在 package.json 的 script 中添加 
-```
-    "lint:eslint": "eslint . --cache --fix",
-```
-
-#### Stylelint
-
-安装依赖:
-
-```
-npm init stylelint  |  pnpm create stylelint
-
-# @stylistic/stylelint-config
-# stylelint-config-recess-order css排序
-# stylelint-config-standard 提供了一套全面的、标准化的 CSS 代码风格规则
-# stylelint-config-standard-scss 专门针对 SCSS（Sassy CSS）语法
-# stylelint-config-standard-vue 添加了特定于 Vue 单文件组件 (SFC) 的规则
-# stylelint-scss  # 处理 SCSS（Sassy CSS）语法
-npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-config-standard-vue stylelint-config-recess-order @stylistic/stylelint-config stylelint-scss
-```
-
-修改`.stylelintrc.json`文件
-```
-{
-  "extends": [
-    "stylelint-config-standard-scss",
-    "stylelint-config-standard-vue/scss",
-    "stylelint-config-recess-order",
-    "@stylistic/stylelint-config"
-  ],
-  "plugins": [
-    "stylelint-scss"
-  ],
-  "overrides": [
-    {
-      "files": [
-        "*.vue",
-        "**/*.vue"
-      ],
-      "customSyntax": "postcss-html"
-    }
-  ]
-}
-
-```
-
-
-在 package.json 的 script 中添加 
-```
-    "lint:stylelint": "stylelint \"src/**/*.{css,scss,vue}\" --cache --fix",
-```
-
-#### npm-run-all
-```
-npm i npm-run-all2 -D
-```
-在 package.json 的 script 中添加 
-```
-    "lint": "npm-run-all -s lint:eslint lint:stylelint",
-```
-
-
-#### simple-git-hooks 和 lint-staged
-
-```
-npm i simple-git-hooks -D
-npm i lint-staged -D     
-
-```
-
-### 必备框架
-
-#### elementui
-```
-npm install element-plus --save
-```
-参考如下代码修改 man.js
-```
-import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import App from './App.vue'
-
-const app = createApp(App)
-
-app.use(ElementPlus)
-app.mount('#app')
-```
-
-安装自动导入插件
-```
-npm install -D unplugin-vue-components unplugin-auto-import
-```
-
-#### router
-
-```
-npm install vue-router@4
-```
-
-创建文件 src\router\index.js
-```
- New-Item -Path ".\src\router\index.js" -ItemType File -Force
-```
-
-```
-import { createMemoryHistory, createRouter } from 'vue-router'
-import Test from '@/pages/test'
-
-const routes = [
-  { path: '/test', component: Test },
-]
-
-const router = createRouter({
-  history: createMemoryHistory(),
-  routes,
-})
-
-export default router
-
-```
-
-修改 main.js
-```
-import router from './router'
-app.use(router)
-```
-
-修改 app.js
-```
-  <main>
-    <RouterView />
-  </main>
-```
-
-#### bootstrap
-
-```
-npm i --save bootstrap @popperjs/core
-```
-
-修改 vite.config.js
-
-``` alias: {
-      '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
-    }
-```
-
-创建文件 src\assets\styles\styles.scss
-```
- New-Item -Path ".\src\assets\styles\styles.scss" -ItemType File -Force
-```
-```
-// Import all of Bootstrap's CSS
-@import "~bootstrap/scss/bootstrap";
-```
-
-修改 main.js
-
-```
-// Import our custom CSS
-import '../scss/styles.scss'
-
-// Import all of Bootstrap's JS
-import * as bootstrap from 'bootstrap'
-```
-
-#### sass
-```
-npm install --save-dev sass
-
-```
-
 ### vite plugin
 
-新建目录 vite/plugins
-新建文件 index.js
+#### 创建vite plugin 文件，修改 基础配置
+
+新建文件 vite/plugins/index.js
+
+```
+ New-Item -Path ".\vite\plugins\index.js" -ItemType File -Force
+```
+
 ```
 import vue from '@vitejs/plugin-vue'
 
@@ -505,7 +579,8 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 ```
 修改 vite.config.js
-```import process from 'node:process'
+```
+import process from 'node:process'
 import { defineConfig, loadEnv } from 'vite'
 import createVitePlugins from './vite/plugins'
 
@@ -526,13 +601,101 @@ export default async ({ mode, command }) => {
     // base: '/',
     // server: { ... },
     // build: { ... },
-    // resolve: { ... },
+    // 设置别名
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+        '#': path.resolve(__dirname, 'src/types'),
+      },
+    },
     // css: { ... },
     // 等等
   })
 }
 ```
 #### auto import
+
+创建文件 `auto-import`
+```
+@'
+import autoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+export default function createAutoImport() {
+  return autoImport({
+    resolvers: [ElementPlusResolver()],
+    imports: [
+      'vue',
+      'vue-router',
+      'pinia',
+    ],
+    dts: './src/types/auto-imports.d.ts',
+    dirs: [
+      './src/utils/composables/**',
+    ],
+  })
+}
+
+'@ | Out-File -Encoding UTF8 .\vite\plugins\auto-import.js
+```
+
+添加至 `vite\plugins\index.js`
+
+```
+import vue from '@vitejs/plugin-vue'
+import createAutoImport from './auto-import'
+import createComponents from './components'
+
+export default function createVitePlugins(viteEnv, isBuild = false) {
+  const vitePlugins = [vue()]
++  vitePlugins.push(createAutoImport())
+  vitePlugins.push(createComponents())
+
+  return vitePlugins
+}
+
+```
+
+#### components
+
+创建文件 `components.js`
+
+```
+@'
+import components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+export default function createComponents() {
+  return components({
+    resolvers: [ElementPlusResolver()],
+    dirs: [
+      'src/components',
+      'src/layouts/ui-kit',
+    ],
+    include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
+    dts: './src/types/components.d.ts',
+  })
+}
+
+'@ | Out-File -Encoding UTF8 .\vite\plugins\components.js
+```
+
+添加至 `vite\plugins\index.js`
+
+```
+import vue from '@vitejs/plugin-vue'
+import createAutoImport from './auto-import'
+import createComponents from './components'
+
+export default function createVitePlugins(viteEnv, isBuild = false) {
+  const vitePlugins = [vue()]
+  vitePlugins.push(createAutoImport())
++  vitePlugins.push(createComponents())
+
+  return vitePlugins
+}
+
+```
 
 #### 开发服务器启动时,在终端中输出信息
 
@@ -683,28 +846,3 @@ export default defineFakeRoute([
 ])
 
 ```
-
-### axios
-
-安装
-```
-npm i axios
-```
-
-新建文件夹 api
-新建文件index.js
-```
-
-```
-
-
-### pinia
-
-安装
-
-参考官网 
-
-```
-npm install pinia
-```
-
