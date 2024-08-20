@@ -631,6 +631,7 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 修改 vite.config.js
 ```
 import process from 'node:process'
+import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import createVitePlugins from './vite/plugins'
 
