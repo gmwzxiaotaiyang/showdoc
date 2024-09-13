@@ -108,7 +108,13 @@ npm i -D eslint @antfu/eslint-config@^2.21.2
 @'
 import antfu from '@antfu/eslint-config'
 
-export default antfu()
+export default antfu({
+  rules: {
+    'unused-imports/no-unused-vars': 'off',
+  },
+},
+)
+
 '@ | Out-File -Encoding UTF8 .\eslint.config.js
 ```
 
