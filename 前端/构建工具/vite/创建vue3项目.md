@@ -358,6 +358,8 @@ app.mount('#app')
 
 #### router
 
+[参考](https://router.vuejs.org/zh/)
+
 ```
 npm install vue-router@4
 ```
@@ -784,7 +786,7 @@ export default function appInfo() {
         // 使用 boxen 创建一个带双重边框的文本框
         boxen(
           // 格式化输出的内容
-          `${bold(green(`由 ${bgGreen('Fantastic-admin')} 驱动`))}\n\n${underline('https://fantastic-admin.github.io')}\n\n当前使用：${cyan('基础版')}`,
+          `${bold(green(`由 ${bgGreen('vite vue')} 驱动`))}\n\n${underline('http://www.yznature.com/')}\n\n当前使用：${cyan('基础版')}`,
           {
             // 设置文本框的内边距
             padding: 1,
