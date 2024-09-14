@@ -1,21 +1,25 @@
-
-## 顺序
-
-- 基础
+- 搭建项目与基础设置
   - [使用Vite创建vue项目](#使用Vite创建vue项目)
-  - [创建 .editorconfig](#创建-editorconfig)
-  - [创建 .nvmrc](#创建nvmrc)
-  - [安装 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
-  - [安装 Stylelint
+  - [代码规范](#代码规范)
+    - [创建 .editorconfig](#创建-editorconfig)
+    - [创建 .nvmrc](#创建nvmrc)
+    - [添加别名](#添加别名)
+    - [安装 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
+    - [安装 Stylelint
   ](#stylelint)
-  - [安装 npm-run-all](#npm-run-all)
-  - [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
-  - [安装 elementui](#elementui)
-  - [安装 auto-import](#auto-import)
-  - [安装 components](#components)
-- 可选
+    - [安装 npm-run-all](#npm-run-all)
+    - [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
+
+- 框架
   - [axios](#axios)
-  - [vue-router](#router)
+  - [vue-router](#vue-router)
+  - [pinia](#pinia)
+  - [安装 elementui](#elementui)
+    - [安装 auto-import](#auto-import)
+    - [安装 components](#components)
+  - [bootstrap](#bootstrap)
+  - [sass](#sass)
+  - [unocss](#unocss)
 
 ## 搭建项目
 
@@ -28,37 +32,6 @@ npm create vite@latest my-vue-app -- --template vue
 npm i
 
 ```
-
-### 添加别名
-
-在`vite.config.js`的`defineConfig`中添加:
-
-```javascript
-import path from 'node:path';
-
-    resolve: { alias: {
-      '@': path.resolve(__dirname, 'src'),
-      '#': path.resolve(__dirname, 'src/types'),
-    } },
-```
-
-创建`jsconfig.json`或`tsconfig.json` :
-```bash
-@'
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  },
-  "include": ["src"]
-}
-'@ | Out-File -Encoding UTF8 jsconfig.json
-```
-
-
-## 安装框架
 
 ### 代码规范
 
@@ -94,6 +67,36 @@ trim_trailing_whitespace = true
 echo "18.20.3" > .nvmrc
 ```
 
+
+#### 添加别名
+
+在`vite.config.js`的`defineConfig`中添加:
+
+```javascript
+import path from 'node:path';
+
+    resolve: { alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '#': path.resolve(__dirname, 'src/types'),
+    } },
+```
+
+创建`jsconfig.json`或`tsconfig.json` :
+```bash
+@'
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src"]
+}
+'@ | Out-File -Encoding UTF8 jsconfig.json
+```
+
+
 #### eslint @antfu/eslint-config
 
 [参考网址](https://www.npmjs.com/package/@antfu/eslint-config/v/2.21.2)
@@ -119,7 +122,7 @@ export default antfu({
 '@ | Out-File -Encoding UTF8 .\eslint.config.js
 ```
 
-##### 添加 package.json 脚本
+##### 添加 `package.json` 脚本
 
 ```json
 {
@@ -193,6 +196,7 @@ export default antfu({
 
 ```
 
+##### 添加 script
 ```bash
 npm run eslin:fix
 
@@ -200,7 +204,7 @@ npm run eslin:fix
 
 #### Stylelint
 
-安装依赖:
+##### 安装依赖:
 
 ```bash
 # 1.
@@ -215,7 +219,7 @@ npm init stylelint  |  pnpm create stylelint
 npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-config-standard-vue stylelint-config-recess-order @stylistic/stylelint-config stylelint-scss
 ```
 
-修改`.stylelintrc.json`文件
+##### 修改`.stylelintrc.json`文件
 ```json
 {
   "extends": [
@@ -241,7 +245,7 @@ npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-confi
 ```
 
 
-在 package.json 的 script 中添加 
+##### 在 package.json 的 script 中添加 
 ```json
     "lint:stylelint": "stylelint \"src/**/*.{css,scss,vue}\" --cache --fix",
 ```
@@ -257,11 +261,22 @@ npm i npm-run-all2 -D
 
 #### simple-git-hooks 和 lint-staged
 
+>simple-git-hooks 和 lint-staged 是两个常用的 JavaScript 工具，它们通常一起使用，以帮助开发者在 Git 提交代码之前自动运行代码质量检查和格式化。
+
+> simple-git-hooks 是一个轻量级的库，用于在 Git 提交时设置和管理 Git 钩子（hooks）。Git 钩子是一些在特定事件（如提交、推送等）发生时自动执行的脚本。使用 simple-git-hooks，你可以轻松地配置这些钩子，而无需手动编辑 Git 配置文件。
+
+> lint-staged 是一个工具，用于在 Git 提交时只对已更改的文件运行 linters 和格式化工具。它可以帮助你确保代码质量，同时提高提交速度，因为它只处理那些实际发生变化的文件。
+
 ```bash
 npm i simple-git-hooks -D
 npm i lint-staged -D     
 
 ```
+
+
+
+## 安装框架
+
 
 ### 必备框架
 
@@ -317,47 +332,7 @@ export default instance
 [配置 mock](#vite-plugin-fake-server-模拟后端服务器的响应)
 
 
-#### pinia
-
-安装
-
-参考官网 
-
-```bash
-npm install pinia
-```
-
-#### elementui
-
-[参考](https://element-plus.org/zh-CN/guide/quickstart.html)
-
-安装依赖
-
-```bash
-npm install element-plus --save
-
-```
-参考如下代码修改 man.js
-```js
-import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import App from './App.vue'
-
-const app = createApp(App)
-
-app.use(ElementPlus)
-app.mount('#app')
-```
-
-##### 安装插件
-
-[auto-import](#auto-import)
-[components](#components)
-
-
-
-#### router
+#### vue-router
 
 [参考](https://router.vuejs.org/zh/)
 
@@ -425,6 +400,44 @@ app.use(router)
     <RouterView />
   </main>
 ```
+
+#### pinia
+
+安装
+
+参考官网 
+
+```bash
+npm install pinia
+```
+
+#### elementui
+
+[参考](https://element-plus.org/zh-CN/guide/quickstart.html)
+
+安装依赖
+
+```bash
+npm install element-plus --save
+
+```
+参考如下代码修改 man.js
+```js
+import { createApp } from 'vue'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import App from './App.vue'
+
+const app = createApp(App)
+
+app.use(ElementPlus)
+app.mount('#app')
+```
+
+##### 安装插件
+
+[auto-import](#auto-import)
+[components](#components)
 
 
 
@@ -645,11 +658,11 @@ export const darkTheme = {
 '@ | Out-File -Encoding UTF8 .\themes\index.js
 ```
 
-### vite plugin
+## vite plugin
 
-#### 创建vite plugin 文件，修改 基础配置
+### 创建vite plugin 文件，修改 基础配置
 
-新建文件 vite/plugins/index.js
+#### 新建文件 vite/plugins/index.js
 
 ```bash
 # mac
@@ -671,7 +684,7 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 ```
 
-修改 vite.config.js
+#### 修改 vite.config.js
 ```js
 import process from 'node:process'
 import path from 'node:path'
@@ -707,9 +720,10 @@ export default async ({ mode, command }) => {
   })
 }
 ```
-#### auto import
 
-创建文件 `auto-import`
+### auto import
+
+#### 创建文件 `auto-import`
 ```bash
 @'
 import autoImport from 'unplugin-auto-import/vite'
@@ -733,7 +747,7 @@ export default function createAutoImport() {
 '@ | Out-File -Encoding UTF8 .\vite\plugins\auto-import.js
 ```
 
-添加至 `vite\plugins\index.js`
+#### 添加至 `vite\plugins\index.js`
 
 ```js
 import vue from '@vitejs/plugin-vue'
@@ -750,9 +764,9 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 ```
 
-#### components
+### components
 
-创建文件 `components.js`
+#### 创建文件 `components.js`
 
 ```bash
 @'
@@ -774,7 +788,7 @@ export default function createComponents() {
 '@ | Out-File -Encoding UTF8 .\vite\plugins\components.js
 ```
 
-添加至 `vite\plugins\index.js`
+#### 添加至 `vite\plugins\index.js`
 
 ```js
 import vue from '@vitejs/plugin-vue'
@@ -791,13 +805,14 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 ```
 
-#### 开发服务器启动时,在终端中输出信息
+### 开发服务器启动时,在终端中输出信息
 
+#### 安装依赖
 ```bash
 npm i boxen -D
 ```
 
-新建app-info.js
+#### 新建app-info.js
 ```js
 // 引入 boxen 库，用于在终端中创建带边框的文本框
 import boxen from 'boxen'
@@ -840,15 +855,16 @@ export default function appInfo() {
 
 ```
 
-#### banner 用于在生成的文件顶部添加自定义注释
+### banner 用于在生成的文件顶部添加自定义注释
 
+#### 安装依赖
 ```bash
 npm install vite-plugin-banner --save-dev   || yarn add vite-plugin-banner --dev
 ```
 
-#### vite-plugin-fake-server 模拟后端服务器的响应
+### vite-plugin-fake-server 模拟后端服务器的响应
 
-参考 [vite-plugin-fake-server github](https://github.com/condorheroblog/vite-plugin-fake-server)
+#### 参考 [vite-plugin-fake-server github](https://github.com/condorheroblog/vite-plugin-fake-server)
 
 ##### 安装依赖
 
