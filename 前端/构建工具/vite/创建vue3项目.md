@@ -370,6 +370,22 @@ npm install vue-router@4
  New-Item -Path ".\src\router\index.js" -ItemType File -Force
 ```
 
+新建 src/views/index.vue & src/views/test/index.vue
+```vue
+<template>
+  <h1>this is index</h1>
+</template>
+
+```
+
+```vue
+<template>
+  <h1>this is test</h1>
+</template>
+
+```
+
+
 ```js
 import { createRouter, createWebHistory } from 'vue-router'
 import index from '@/views/index.vue'
@@ -391,6 +407,9 @@ export default router
 
 修改 App.vue
 ```vue
+<template>
+  <RouterView />
+</template>
 
 ```
 
@@ -406,6 +425,8 @@ app.use(router)
     <RouterView />
   </main>
 ```
+
+
 
 #### bootstrap
 
