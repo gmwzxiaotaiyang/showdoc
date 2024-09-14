@@ -15,6 +15,7 @@
   - [安装 components](#components)
 - 可选
   - [axios](#axios)
+  - [vue-router](#router)
 
 ## 搭建项目
 
@@ -22,7 +23,7 @@
 
 参考官方指南: [Vite 官方文档](https://cn.vitejs.dev/guide/#scaffolding-your-first-vite-project)
 
-```
+```bash
 npm create vite@latest my-vue-app -- --template vue 
 npm i
 
@@ -42,7 +43,7 @@ import path from 'node:path';
 ```
 
 创建`jsconfig.json`或`tsconfig.json` :
-```
+```bash
 @'
 {
   "compilerOptions": {
@@ -67,7 +68,7 @@ import path from 'node:path';
 
 >  .editorconfig 是一种文件格式和一组文本编辑器插件，用于在不同的编辑器和集成开发环境（IDE）之间保持一致的编码风格。它用在不同开发人员之间维护一致的编码风格。
 
-```
+```bash
 @'
 root = true
 
@@ -89,7 +90,7 @@ trim_trailing_whitespace = true
 
 > .nvmrc 是一个用于指定 Node.js 版本的文件，通常放置在项目的根目录中。这个文件的主要目的是帮助开发者在不同的项目之间切换 Node.js 版本时更加方便和一致。.nvmrc 文件的内容非常简单，通常只包含一个版本号，例如：
 
-```
+```bash
 echo "18.20.3" > .nvmrc
 ```
 
@@ -99,12 +100,12 @@ echo "18.20.3" > .nvmrc
 
 ##### 安装依赖:
 
-```
+```bash
 npm i -D eslint @antfu/eslint-config@^2.21.2
 ```
 
 ##### 创建 `eslint.config.js`
-```
+```bash
 @'
 import antfu from '@antfu/eslint-config'
 
@@ -120,7 +121,7 @@ export default antfu({
 
 ##### 添加 package.json 脚本
 
-```
+```json
 {
   "scripts": {
     "lint": "eslint .",
@@ -139,7 +140,7 @@ export default antfu({
 
 ##### 配置VSCode:
 
-```
+```json
 {
   // 禁用默认的格式化程序，使用 eslint 代替
   "prettier.enable": true,
@@ -192,7 +193,7 @@ export default antfu({
 
 ```
 
-```
+```bash
 npm run eslin:fix
 
 ```
@@ -201,10 +202,10 @@ npm run eslin:fix
 
 安装依赖:
 
-```
-1.
-# npm init stylelint  |  pnpm create stylelint
-2. （推荐）
+```bash
+# 1.
+npm init stylelint  |  pnpm create stylelint
+# 2. （推荐）
 # @stylistic/stylelint-config
 # stylelint-config-recess-order css排序
 # stylelint-config-standard 提供了一套全面的、标准化的 CSS 代码风格规则
@@ -215,7 +216,7 @@ npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-confi
 ```
 
 修改`.stylelintrc.json`文件
-```
+```json
 {
   "extends": [
     "stylelint-config-standard-scss",
@@ -241,22 +242,22 @@ npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-confi
 
 
 在 package.json 的 script 中添加 
-```
+```json
     "lint:stylelint": "stylelint \"src/**/*.{css,scss,vue}\" --cache --fix",
 ```
 
 #### npm-run-all
-```
+```bash
 npm i npm-run-all2 -D
 ```
 在 package.json 的 script 中添加 
-```
+```bash
     "lint": "npm-run-all -s lint:eslint lint:stylelint",
 ```
 
 #### simple-git-hooks 和 lint-staged
 
-```
+```bash
 npm i simple-git-hooks -D
 npm i lint-staged -D     
 
@@ -269,17 +270,17 @@ npm i lint-staged -D
 参考 [axios 官网](https://axios-http.com/docs/intro)
 
 安装
-```
+```bash
 npm i axios
 ```
 
 新建文件夹 src\api\index.js
-```
+```bash
  New-Item -Path ".\src\api\index.js" -ItemType File -Force
 ```
 
 
-```
+```bash
 @'
 import axios from 'axios'
 
@@ -322,7 +323,7 @@ export default instance
 
 参考官网 
 
-```
+```bash
 npm install pinia
 ```
 
@@ -332,12 +333,12 @@ npm install pinia
 
 安装依赖
 
-```
+```bash
 npm install element-plus --save
 
 ```
 参考如下代码修改 man.js
-```
+```js
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -360,25 +361,27 @@ app.mount('#app')
 
 [参考](https://router.vuejs.org/zh/)
 
-```
+```bash
 npm install vue-router@4
 ```
 
 创建文件 src\router\index.js
-```
+```bash
  New-Item -Path ".\src\router\index.js" -ItemType File -Force
 ```
 
-```
-import { createMemoryHistory, createRouter } from 'vue-router'
-import Test from '@/pages/test'
+```js
+import { createRouter, createWebHistory } from 'vue-router'
+import index from '@/views/index.vue'
+import test from '@/views/test/index.vue'
 
 const routes = [
-  { path: '/test', component: Test },
+  { path: '/', component: index },
+  { path: '/test', component: test },
 ]
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 })
 
@@ -386,14 +389,19 @@ export default router
 
 ```
 
-修改 main.js
+修改 App.vue
+```vue
+
 ```
+
+修改 main.js
+```js
 import router from './router'
 app.use(router)
 ```
 
 修改 app.js
-```
+```js
   <main>
     <RouterView />
   </main>
@@ -401,29 +409,30 @@ app.use(router)
 
 #### bootstrap
 
-```
+```bash
 npm i --save bootstrap @popperjs/core
 ```
 
 修改 vite.config.js
 
-``` alias: {
-      '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
+```js
+alias: {
++      '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
     }
 ```
 
 创建文件 src\assets\styles\styles.scss
-```
+```bash
  New-Item -Path ".\src\assets\styles\styles.scss" -ItemType File -Force
 ```
-```
+```bash
 // Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
 ```
 
 修改 main.js
 
-```
+```js
 // Import our custom CSS
 import '../scss/styles.scss'
 
@@ -432,7 +441,7 @@ import * as bootstrap from 'bootstrap'
 ```
 
 #### sass
-```
+```bash
 npm install --save-dev sass
 
 ```
@@ -441,13 +450,13 @@ npm install --save-dev sass
 
 安装依赖
 
-```
+```bash
 npm i unocss -D
 ```
 
 创建`uno.config.js`和主题文件 
 
-```
+```bash
 @'
 import {
   defineConfig,
@@ -526,7 +535,7 @@ export default defineConfig({
 
 ```
 
-```
+```bash
 @'
 import { hex2rgba } from '@unocss/preset-mini/utils'
 
@@ -621,11 +630,15 @@ export const darkTheme = {
 
 新建文件 vite/plugins/index.js
 
-```
- New-Item -Path ".\vite\plugins\index.js" -ItemType File -Force
+```bash
+# mac
+mkdir -p vite/plugins
+touch vite/plugins/index.js
+# win
+New-Item -Path ".\vite\plugins\index.js" -ItemType File -Force
 ```
 
-```
+```js
 import vue from '@vitejs/plugin-vue'
 
 
@@ -636,8 +649,9 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 }
 
 ```
+
 修改 vite.config.js
-```
+```js
 import process from 'node:process'
 import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
@@ -675,7 +689,7 @@ export default async ({ mode, command }) => {
 #### auto import
 
 创建文件 `auto-import`
-```
+```bash
 @'
 import autoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -700,7 +714,7 @@ export default function createAutoImport() {
 
 添加至 `vite\plugins\index.js`
 
-```
+```js
 import vue from '@vitejs/plugin-vue'
 +import createAutoImport from './auto-import'
 import createComponents from './components'
@@ -719,7 +733,7 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 创建文件 `components.js`
 
-```
+```bash
 @'
 import components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -741,7 +755,7 @@ export default function createComponents() {
 
 添加至 `vite\plugins\index.js`
 
-```
+```js
 import vue from '@vitejs/plugin-vue'
 import createAutoImport from './auto-import'
 +import createComponents from './components'
@@ -758,12 +772,12 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 #### 开发服务器启动时,在终端中输出信息
 
-```
+```bash
 npm i boxen -D
 ```
 
 新建app-info.js
-```
+```js
 // 引入 boxen 库，用于在终端中创建带边框的文本框
 import boxen from 'boxen'
 // 引入 picocolors 库，用于给终端文本添加颜色和样式
@@ -807,9 +821,8 @@ export default function appInfo() {
 
 #### banner 用于在生成的文件顶部添加自定义注释
 
-```
+```bash
 npm install vite-plugin-banner --save-dev   || yarn add vite-plugin-banner --dev
-
 ```
 
 #### vite-plugin-fake-server 模拟后端服务器的响应
@@ -818,12 +831,12 @@ npm install vite-plugin-banner --save-dev   || yarn add vite-plugin-banner --dev
 
 ##### 安装依赖
 
-```
+```bash
 npm install vite-plugin-fake-server --save-dev
 ```
 
 ##### 新建 `.\vite\plugins\mock.js` 文件
-```
+```bash
 @'
 import { vitePluginFakeServer } from 'vite-plugin-fake-server'
 
@@ -840,7 +853,7 @@ export default function createMock(env, isBuild) {
 
 ##### 添加至 `vite\plugins\index.js`
 
-```
+```js
 import vue from '@vitejs/plugin-vue'
 import createAutoImport from './auto-import'
 import createComponents from './components'
@@ -859,17 +872,17 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
 ##### 安装`mock.js @faker-js/faker`
 
-```
+```bash
 npm i mockjs @faker-js/faker
 ```
 
 ##### 新建 mock 文件（如 user）
 
-```
+```bash
  New-Item -Path ".\src\mock\user.fake.js" -ItemType File -Force
 ```
 
-```
+```js
 import { defineFakeRoute } from 'vite-plugin-fake-server/client'
 import Mock from 'mockjs'
 import { faker } from '@faker-js/faker'
@@ -958,6 +971,5 @@ export default defineFakeRoute([
     },
   },
 ])
-
 
 ```
