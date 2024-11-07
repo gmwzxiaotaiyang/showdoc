@@ -5,10 +5,8 @@
     - [创建 .nvmrc](#创建nvmrc)
     - [添加别名](#添加别名)
     - [安装 eslint @antfu/eslint-config](#eslint-antfueslint-config) 
-    - [安装 Stylelint
-  ](#stylelint)
+    - [安装 Stylelint](#stylelint)
     - [安装 npm-run-all](#npm-run-all)
-    - [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
 
 - 框架
   - [axios](#axios)
@@ -20,6 +18,8 @@
   - [bootstrap](#bootstrap)
   - [sass](#sass)
   - [unocss](#unocss)
+
+- [创建vite-plugin-文件修改-基础配置](#创建vite-plugin-文件修改-基础配置)  （包含添加别名）
 
 ## 搭建项目
 
@@ -243,6 +243,25 @@ npm install --save-dev stylelint  stylelint-config-standard-scss stylelint-confi
 }
 
 ```
+
+##### 修改`.vscode\settings.json`文件
+
+```json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+
+  "stylelint.validate": [
+    "css",
+    "scss",
+    "vue"
+  ]
+}
+
+```
+
 
 
 ##### 在 package.json 的 script 中添加 
