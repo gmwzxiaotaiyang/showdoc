@@ -8,6 +8,7 @@
     - [安装 Stylelint](#stylelint)
     - [安装 npm-run-all](#npm-run-all)
 
+
 - 框架
   - [axios](#axios)
   - [vue-router](#vue-router)
@@ -104,7 +105,7 @@ import path from 'node:path';
 ##### 安装依赖:
 
 ```bash
-npm i -D eslint @antfu/eslint-config@^2.21.2
+npm i -D eslint @antfu/eslint-config
 ```
 
 ##### 创建 `eslint.config.js`
@@ -115,6 +116,9 @@ import antfu from '@antfu/eslint-config'
 export default antfu({
   rules: {
     'unused-imports/no-unused-vars': 'off',
+    'vue/no-unused-vars': 'off',
+    'no-console': 'off',
+    'vue/custom-event-name-casing': 'off',
   },
 },
 )
@@ -1029,3 +1033,107 @@ export default defineFakeRoute([
 ])
 
 ```
+
+### svg
+
+##### 安装依赖
+```bash
+npm install vite-plugin-svg-icons  --save-dev
+```
+
+
+##### 新建 svg-icon.js 文件
+
+```bash
+@'
+import path from 'node:path'
+import process from 'node:process'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+
+export default function createSvgIcon(isBuild) {
+  return createSvgIconsPlugin({
+    iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/')],
+    symbolId: 'icon-[dir]-[name]',
+    svgoOptions: isBuild,
+  })
+}
+'@ | Out-File -Encoding UTF8 .\vite\plugins\svg-icon.js
+
+```
+
+##### 修改 .\vite\plugins\indes.js 文件
+
+```js
+import createSvgIcon from './svg-icon'
+
+  vitePlugins.push(createSvgIcon(isBuild))
+```
+
+```vue
+<script>
+export default defineComponent({
+  props: {
+    iconClass: {
+      type: String,
+      required: true,
+    },
+    className: {
+      type: String,
+      default: '',
+    },
+    color: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props) {
+    return {
+      iconName: computed(() => `#icon-${props.iconClass}`),
+      svgClass: computed(() => {
+        if (props.className) {
+          return `svg-icon ${props.className}`
+        }
+        return 'svg-icon'
+      }),
+    }
+  },
+})
+</script>
+
+<template>
+  <svg :class="svgClass" aria-hidden="true">
+    <use :xlink:href="iconName" :fill="color" />
+  </svg>
+</template>
+
+<style scope lang="scss">
+.sub-el-icon,
+.nav-icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 12px;
+  font-size: 15px;
+}
+
+.svg-icon {
+  position: relative;
+  width: 1em;
+  height: 1em;
+  vertical-align: -2px;
+  fill: currentcolor;
+}
+</style>
+
+```
+
+
+
+##### 全局组件挂载
+```
+import 'virtual:svg-icons-register'
+import SvgIcon from '@/components/SvgIcon/index.vue'
+
+app.component('svg-icon', SvgIcon)
+
+```
+
