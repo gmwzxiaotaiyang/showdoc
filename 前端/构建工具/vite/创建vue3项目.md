@@ -448,12 +448,16 @@ npm install element-plus --save
 ```js
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import 'element-plus/dist/index.css'
 import App from './App.vue'
 
 const app = createApp(App)
 
-app.use(ElementPlus)
+app.use(ElementPlus, {
+  locale: zhCn,
+})
+
 app.mount('#app')
 ```
 
@@ -822,6 +826,43 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
   const vitePlugins = [vue()]
   vitePlugins.push(createAutoImport())
 +  vitePlugins.push(createComponents())
+
+  return vitePlugins
+}
+
+```
+
+### icons
+
+#### 创建文件 `components.js`
+
+```bash
+@'
+import Icons from 'unplugin-icons/vite'
+
+export default function createIcons() {
+  return Icons({
+    autoInstall: true,
+  })
+}
+
+
+'@ | Out-File -Encoding UTF8 .\vite\plugins\icons.js
+```
+
+#### 添加至 `vite\plugins\index.js`
+
+```js
+import vue from '@vitejs/plugin-vue'
+import createAutoImport from './auto-import'
+import createComponents from './components'
++import createIcons from './icons'
+
+export default function createVitePlugins(viteEnv, isBuild = false) {
+  const vitePlugins = [vue()]
+  vitePlugins.push(createAutoImport())
+  vitePlugins.push(createComponents())
++  vitePlugins.push(createIcons())
 
   return vitePlugins
 }
